@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZORA Dashboard — Advanced Pocket Trader</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <svg class="logo" viewBox="0 0 32 32" fill="none">
+        <rect x="2" y="2" width="28" height="28" rx="6" stroke="currentColor" stroke-width="2"/>
+        <path d="M9 22V10l7 7 7-7v12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="16" cy="16" r="2" fill="currentColor"/>
+      </svg>
+      <span class="brand">ZORA</span>
+    </div>
+    <nav class="nav">
+      <a href="#overview" class="nav-item active" data-page="overview">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        <span>Overview</span>
+      </a>
+      <a href="#positions" class="nav-item" data-page="positions">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-5"/></svg>
+        <span>Positions</span>
+      </a>
+      <a href="#trades" class="nav-item" data-page="trades">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h18v18H3z"/><path d="M3 9h18M9 3v18"/></svg>
+        <span>Trade History</span>
+      </a>
+      <a href="#brain" class="nav-item" data-page="brain">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v.5A3.5 3.5 0 0 0 6 9c0 1 .5 2 1 2.5A3.5 3.5 0 0 0 9 18a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3.5 3.5 0 0 0 2-6.5c.5-.5 1-1.5 1-2.5a3.5 3.5 0 0 0-3-3.5V5a3 3 0 0 0-3-3z"/></svg>
+        <span>Brain Weights</span>
+      </a>
+      <a href="#ai" class="nav-item" data-page="ai">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        <span>AI Panel</span>
+      </a>
+      <a href="#risk" class="nav-item" data-page="risk">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span>Risk Settings</span>
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="status-badge">
+        <span class="status-dot"></span>
+        <span>Paper Trading</span>
+      </div>
+      <div class="version">ZORA v0.8.0</div>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main">
+    <!-- Top Bar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <h1 id="page-title">Overview</h1>
+        <span class="last-update">Last updated: <span id="last-update-time">--</span></span>
+      </div>
+      <div class="topbar-right">
+        <div class="eth-price">
+          <span class="label">ETH/USDT</span>
+          <span class="price" id="eth-price">$2,418.50</span>
+          <span class="price-change" id="eth-change">+2.34%</span>
+        </div>
+        <div class="bot-status">
+          <span class="status-dot running"></span>
+          <span>Bot Running</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Page: Overview -->
+    <section id="overview" class="page active">
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-label">Total Equity</div>
+          <div class="kpi-value">$1,247.83</div>
+          <div class="kpi-delta positive">+24.78%</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Today's PnL</div>
+          <div class="kpi-value positive">+$34.21</div>
+          <div class="kpi-delta positive">+2.82%</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Win Rate</div>
+          <div class="kpi-value">62.5%</div>
+          <div class="kpi-delta">15W / 9L</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Profit Factor</div>
+          <div class="kpi-value">2.14</div>
+          <div class="kpi-delta positive">Healthy</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Max Drawdown</div>
+          <div class="kpi-value">-8.3%</div>
+          <div class="kpi-delta negative">Peak: $1,283</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Sharpe Ratio</div>
+          <div class="kpi-value">1.87</div>
+          <div class="kpi-delta positive">Sortino: 2.31</div>
+        </div>
+      </div>
+
+      <div class="chart-section">
+        <div class="chart-header">
+          <h2>Equity Curve</h2>
+          <div class="chart-toggles">
+            <button class="toggle-btn active" data-range="all">All</button>
+            <button class="toggle-btn" data-range="30d">30D</button>
+            <button class="toggle-btn" data-range="7d">7D</button>
+          </div>
+        </div>
+        <div class="chart-container">
+          <canvas id="equity-chart"></canvas>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="panel">
+          <h3>Open Positions</h3>
+          <div class="position-list" id="overview-positions">
+            <!-- Filled by JS -->
+          </div>
+        </div>
+        <div class="panel">
+          <h3>Recent Signals</h3>
+          <div class="signal-list" id="overview-signals">
+            <!-- Filled by JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Page: Positions -->
+    <section id="positions" class="page">
+      <div class="panel full">
+        <div class="panel-header">
+          <h2>Open Positions</h2>
+          <span class="badge">2 active</span>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Symbol</th>
+                <th>Side</th>
+                <th>Entry Price</th>
+                <th>Current Price</th>
+                <th>Size (ETH)</th>
+                <th>Notional</th>
+                <th>Stop Loss</th>
+                <th>Take Profit</th>
+                <th>Unrealized PnL</th>
+                <th>Opened</th>
+              </tr>
+            </thead>
+            <tbody id="positions-table">
+              <!-- Filled by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Page: Trades -->
+    <section id="trades" class="page">
+      <div class="panel full">
+        <div class="panel-header">
+          <h2>Closed Trades</h2>
+          <div class="filter-bar">
+            <select class="filter-select" id="trade-filter">
+              <option value="all">All Symbols</option>
+              <option value="ETH/USDT">ETH/USDT</option>
+            </select>
+            <button class="toggle-btn" id="export-csv">Export CSV</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Symbol</th>
+                <th>Side</th>
+                <th>Entry</th>
+                <th>Exit</th>
+                <th>Size</th>
+                <th>PnL</th>
+                <th>R-Multiple</th>
+                <th>Hold Time</th>
+                <th>Exit Reason</th>
+              </tr>
+            </thead>
+            <tbody id="trades-table">
+              <!-- Filled by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Page: Brain -->
+    <section id="brain" class="page">
+      <div class="brain-stats">
+        <div class="kpi-card small">
+          <div class="kpi-label">Trades Learned From</div>
+          <div class="kpi-value">24</div>
+        </div>
+        <div class="kpi-card small">
+          <div class="kpi-label">Learning Rate</div>
+          <div class="kpi-value">0.15</div>
+        </div>
+        <div class="kpi-card small">
+          <div class="kpi-label">Weight Bounds</div>
+          <div class="kpi-value">5% – 70%</div>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="panel">
+          <h3>Expert Weights</h3>
+          <p class="panel-subtitle">How much the brain trusts each expert (auto-learned)</p>
+          <div class="chart-container">
+            <canvas id="expert-chart"></canvas>
+          </div>
+        </div>
+        <div class="panel">
+          <h3>Factor Weights</h3>
+          <p class="panel-subtitle">Technical factor contributions per timeframe</p>
+          <div class="chart-container">
+            <canvas id="factor-chart"></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="panel full">
+        <h3>Brain State (brain_state.json)</h3>
+        <div class="code-block" id="brain-state-json">
+          <!-- Filled by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Page: AI Panel -->
+    <section id="ai" class="page">
+      <div class="ai-grid" id="ai-providers">
+        <!-- Filled by JS -->
+      </div>
+      <div class="panel full">
+        <div class="panel-header">
+          <h3>Judge Synthesis</h3>
+          <span class="badge green">Enabled</span>
+        </div>
+        <p class="panel-subtitle">When 2+ providers answer, their verdicts go to a judge to synthesize one final call</p>
+        <div class="judge-info" id="judge-info">
+          <!-- Filled by JS -->
+        </div>
+      </div>
+      <div class="panel full">
+        <h3>Recent AI Verdicts</h3>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Symbol</th>
+                <th>Provider</th>
+                <th>Lean</th>
+                <th>Confidence</th>
+                <th>Note</th>
+                <th>Latency</th>
+              </tr>
+            </thead>
+            <tbody id="ai-verdicts-table">
+              <!-- Filled by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Page: Risk -->
+    <section id="risk" class="page">
+      <div class="risk-grid">
+        <div class="risk-card">
+          <h3>Position Sizing</h3>
+          <div class="risk-row"><span class="risk-label">Risk Per Trade</span><span class="risk-value">0.5% of equity</span></div>
+          <div class="risk-row"><span class="risk-label">Max Exposure</span><span class="risk-value">30% of equity</span></div>
+          <div class="risk-row"><span class="risk-label">Max Position Notional</span><span class="risk-value">30% of equity</span></div>
+          <div class="risk-row"><span class="risk-label">Current Exposure</span><span class="risk-value positive">18.2%</span></div>
+        </div>
+        <div class="risk-card">
+          <h3>Kill Switches</h3>
+          <div class="risk-row"><span class="risk-label">Max Daily Loss</span><span class="risk-value">3% (–$37.43)</span></div>
+          <div class="risk-row"><span class="risk-label">Max Drawdown</span><span class="risk-value">15% (–$187.18)</span></div>
+          <div class="risk-row"><span class="risk-label">Daily Loss Used</span><span class="risk-value positive">$34.21 / $37.43</span></div>
+          <div class="risk-row"><span class="risk-label">Drawdown from Peak</span><span class="risk-value">2.8%</span></div>
+        </div>
+        <div class="risk-card">
+          <h3>Stops & Targets</h3>
+          <div class="risk-row"><span class="risk-label">ATR Stop Multiplier</span><span class="risk-value">2.0x</span></div>
+          <div class="risk-row"><span class="risk-label">ATR Take Profit</span><span class="risk-value">3.5x</span></div>
+          <div class="risk-row"><span class="risk-label">Reward/Risk Ratio</span><span class="risk-value positive">1.75</span></div>
+          <div class="risk-row"><span class="risk-label">Trailing Stop</span><span class="risk-value">Enabled (2.0 ATR)</span></div>
+          <div class="risk-row"><span class="risk-label">Breakeven at</span><span class="risk-value">1.0R</span></div>
+        </div>
+        <div class="risk-card">
+          <h3>Market Guards</h3>
+          <div class="risk-row"><span class="risk-label">Stale Data Limit</span><span class="risk-value">2.5 candles</span></div>
+          <div class="risk-row"><span class="risk-label">Max Spread</span><span class="risk-value">15 bps</span></div>
+          <div class="risk-row"><span class="risk-label">Min 24h Volume</span><span class="risk-value">$1,000,000</span></div>
+          <div class="risk-row"><span class="risk-label">Degradation PF</span><span class="risk-value">0.7 (20 trades)</span></div>
+          <div class="risk-row"><span class="risk-label">BTC/ETH Correlation</span><span class="risk-value">0.82 (normal)</span></div>
+        </div>
+        <div class="risk-card">
+          <h3>Execution</h3>
+          <div class="risk-row"><span class="risk-label">Exchange</span><span class="risk-value">HTX</span></div>
+          <div class="risk-row"><span class="risk-label">Fee Rate</span><span class="risk-value">0.10% per side</span></div>
+          <div class="risk-row"><span class="risk-label">Slippage</span><span class="risk-value">5 bps</span></div>
+          <div class="risk-row"><span class="risk-label">Native Protection</span><span class="risk-value positive">Required</span></div>
+          <div class="risk-row"><span class="risk-label">Reconcile on Start</span><span class="risk-value positive">Enabled</span></div>
+        </div>
+        <div class="risk-card">
+          <h3>Extra Experts</h3>
+          <div class="risk-row"><span class="risk-label">ML Expert</span><span class="risk-value positive">Active (acc: 0.58)</span></div>
+          <div class="risk-row"><span class="risk-label">Fear & Greed</span><span class="risk-value">Greed (74)</span></div>
+          <div class="risk-row"><span class="risk-label">TradingView Webhook</span><span class="risk-value">Disabled</span></div>
+          <div class="risk-row"><span class="risk-label">DCA Simulator</span><span class="risk-value">Available</span></div>
+          <div class="risk-row"><span class="risk-label">Grid Simulator</span><span class="risk-value">Available</span></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
