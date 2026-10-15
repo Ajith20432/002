@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "zora-bot"
+dynamic = ["version"]
+description = "ZORA: multi-timeframe, multi-factor crypto trading bot (paper by default) with a hard risk engine"
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.10"
+dependencies = [
+    "ccxt>=4.3.0",
+    "pandas>=2.0.0",
+    "numpy>=1.24.0",
+    "python-dotenv>=1.0.0",
+    "requests>=2.31.0",
+]
+
+[project.optional-dependencies]
+dashboard = ["fastapi>=0.115.0", "uvicorn>=0.30.0"]
+dev = ["pytest>=8.0.0", "ruff>=0.5.0"]
+
+[project.scripts]
+zora = "bot:main"
+
+[tool.setuptools]
+py-modules = ["backtester", "bot", "brain", "config", "costs", "dashboard", "data", "db", "dca", "exchange_manager", "exchange_sandbox", "exchange_smoke", "execution", "fear_greed", "grid", "guards", "indicators", "logging_setup", "metrics", "ml_model", "multi_ai", "news_feed", "optimize", "patterns", "paper_report", "portfolio_backtest", "historical_cache", "replay_report", "risk", "strategy", "telegram_control", "tv_signal", "validation"]
+
+[tool.setuptools.dynamic]
+version = { file = "VERSION" }
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 140
+target-version = "py310"
+
+[tool.ruff.lint]
+# ruff's defaults (E4/E7/E9/F): real errors, unused imports/names, multiple statements per line.
+select = ["E4", "E7", "E9", "F"]

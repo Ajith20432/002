@@ -1,0 +1,20 @@
+services:
+  zora:
+    build: .
+    container_name: zora
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - zora_data:/data
+      - zora_logs:/logs
+    ports:
+      - "127.0.0.1:8787:8787"
+    healthcheck:
+      test: ["CMD","curl","-fsS","http://127.0.0.1:8787/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    stop_grace_period: 30s
+volumes:
+  zora_data:
+  zora_logs:
