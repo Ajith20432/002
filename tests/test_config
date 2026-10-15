@@ -1,0 +1,100 @@
+from config import CFG, Config, _b, _f, _i
+
+
+def test_f_returns_default_when_env_var_is_unset():
+    assert _f("ZORA_TEST_UNSET_FLOAT", 1.5) == 1.5
+
+
+def test_f_parses_a_valid_float_from_env(monkeypatch):
+    monkeypatch.setenv("ZORA_TEST_FLOAT", "7.25")
+    assert _f("ZORA_TEST_FLOAT", 1.0) == 7.25
+
+
+def test_f_falls_back_to_default_on_unparseable_value(monkeypatch):
+    monkeypatch.setenv("ZORA_TEST_FLOAT", "not-a-number")
+    assert _f("ZORA_TEST_FLOAT", 2.5) == 2.5
+
+
+def test_i_parses_a_valid_int_from_env(monkeypatch):
+    monkeypatch.setenv("ZORA_TEST_INT", "99")
+    assert _i("ZORA_TEST_INT", 1) == 99
+
+
+def test_i_falls_back_to_default_on_unparseable_value(monkeypatch):
+    monkeypatch.setenv("ZORA_TEST_INT", "not-a-number")
+    assert _i("ZORA_TEST_INT", 42) == 42
+
+
+def test_b_recognizes_common_truthy_strings(monkeypatch):
+    for truthy in ["1", "true", "TRUE", "yes", "on", "On"]:
+        monkeypatch.setenv("ZORA_TEST_BOOL", truthy)
+        assert _b("ZORA_TEST_BOOL", False) is True
+
+
+def test_b_recognizes_falsy_and_unrecognized_strings(monkeypatch):
+    for falsy in ["0", "false", "no", "off", "garbage"]:
+        monkeypatch.setenv("ZORA_TEST_BOOL", falsy)
+        assert _b("ZORA_TEST_BOOL", True) is False
+
+
+def test_b_uses_default_when_the_env_var_is_unset(monkeypatch):
+    monkeypatch.delenv("ZORA_TEST_BOOL_UNSET", raising=False)
+    assert _b("ZORA_TEST_BOOL_UNSET", True) is True
+    assert _b("ZORA_TEST_BOOL_UNSET", False) is False
+
+
+def test_symbols_falls_back_to_a_single_element_tuple_of_symbol(monkeypatch):
+    monkeypatch.delenv("SYMBOLS", raising=False)
+    monkeypatch.setenv("SYMBOL", "DOGE/USDT")
+    fresh = Config()
+    assert fresh.symbols == ("DOGE/USDT",)
+
+
+def test_symbols_splits_and_strips_a_comma_separated_list(monkeypatch):
+    monkeypatch.setenv("SYMBOLS", " BTC/USDT ,ETH/USDT,  SOL/USDT ")
+    fresh = Config()
+    assert fresh.symbols == ("BTC/USDT", "ETH/USDT", "SOL/USDT")
+
+
+def test_timeframes_defaults_to_15m_1h_4h(monkeypatch):
+    monkeypatch.delenv("TIMEFRAMES", raising=False)
+    fresh = Config()
+    assert fresh.timeframes == ("15m", "1h", "4h")
+
+
+def test_timeframes_respects_a_custom_env_value(monkeypatch):
+    monkeypatch.setenv("TIMEFRAMES", "5m,30m")
+    fresh = Config()
+    assert fresh.timeframes == ("5m", "30m")
+
+
+def test_live_allowed_requires_every_one_of_the_four_conditions():
+    base = dict(live_trading=True, i_understand_the_risk=True, api_key="key", api_secret="secret")
+    assert Config(**base).live_allowed() is True
+
+    for field_name in ("live_trading", "i_understand_the_risk"):
+        kwargs = dict(base)
+        kwargs[field_name] = False
+        assert Config(**kwargs).live_allowed() is False
+
+    for field_name in ("api_key", "api_secret"):
+        kwargs = dict(base)
+        kwargs[field_name] = ""
+        assert Config(**kwargs).live_allowed() is False
+
+
+def test_live_allowed_on_the_production_singleton_can_be_toggled_and_restored(monkeypatch):
+    monkeypatch.setattr(CFG, "live_trading", True)
+    monkeypatch.setattr(CFG, "i_understand_the_risk", True)
+    monkeypatch.setattr(CFG, "api_key", "key")
+    monkeypatch.setattr(CFG, "api_secret", "secret")
+    assert CFG.live_allowed() is True
+
+    monkeypatch.setattr(CFG, "api_secret", "")
+    assert CFG.live_allowed() is False
+
+
+def test_ai_council_requires_dossier_timeframes(monkeypatch):
+    monkeypatch.setattr(CFG, "strategy_mode", "ai_council")
+    monkeypatch.setattr(CFG, "timeframes", ("15m", "4h"))
+    assert any("15m and 1h" in p for p in CFG.validate())
